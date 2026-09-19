@@ -1,0 +1,127 @@
+@import "tailwindcss";
+
+@theme {
+  --color-fond: #FAFAF9;
+  --color-surface: #FFFFFF;
+  --color-texte: #0A0A0A;
+  --color-secondaire: #525252;
+  --color-primaire: #166534;
+  --color-cta: #15803D;
+  --color-total: #14532D;
+  --color-alerte: #B45309;
+  --color-bord: #E5E5E5;
+  --font-sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-fond);
+  color: var(--color-texte);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Chiffres d'abord — prix / totaux énormes */
+.prix-geant {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.prix-estime {
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  color: var(--color-total);
+}
+
+.prix-min,
+.prix-max {
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.total-geant {
+  font-size: clamp(2rem, 7vw, 3.25rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--color-total);
+}
+
+.btn-cta {
+  background-color: var(--color-cta);
+  color: white;
+  font-weight: 700;
+  border-radius: 0.75rem;
+  transition: background-color 0.15s, transform 0.1s;
+}
+.btn-cta:hover {
+  background-color: var(--color-primaire);
+}
+.btn-cta:active {
+  transform: scale(0.97);
+}
+
+.chip {
+  border: 1px solid var(--color-bord);
+  background: var(--color-surface);
+  color: var(--color-secondaire);
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.chip:hover {
+  border-color: var(--color-primaire);
+  color: var(--color-primaire);
+}
+.chip.active {
+  background: var(--color-primaire);
+  border-color: var(--color-primaire);
+  color: white;
+}
+
+.card-produit {
+  background: var(--color-surface);
+  border: 1px solid var(--color-bord);
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+.card-produit:hover {
+  border-color: #bbf7d0;
+  box-shadow: 0 4px 20px rgba(22, 101, 52, 0.08);
+}
+
+/* Sticky panier bar */
+.panier-sticky {
+  position: sticky;
+  bottom: 0;
+  z-index: 40;
+  background: var(--color-surface);
+  border-top: 2px solid var(--color-bord);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.badge-demo {
+  background: #FEF3C7;
+  color: var(--color-alerte);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  opacity: 1;
+}

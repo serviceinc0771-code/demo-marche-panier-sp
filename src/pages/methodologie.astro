@@ -1,0 +1,78 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Méthodologie — Marché San-Pédro">
+  <article class="mx-auto max-w-2xl px-4 py-8 prose-sm">
+    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">Méthodologie des prix</h1>
+    <p class="text-secondaire mb-8">
+      Comment lire les fourchettes min / estimé / max de cette démonstration.
+    </p>
+
+    <div class="rounded-2xl border border-bord bg-surface p-5 mb-6">
+      <span class="badge-demo">Estimations démo</span>
+      <p class="mt-3 font-bold text-lg text-texte">
+        Ces prix ne sont <em>pas</em> branchés à une API live ni à un relevé marché du jour.
+      </p>
+      <p class="mt-2 text-secondaire text-sm leading-relaxed">
+        Les montants en FCFA sont des <strong class="text-texte">ordres de grandeur</strong> inspirés
+        du contexte ivoirien (San-Pédro / Côte d’Ivoire), volontairement arrondis, pour illustrer
+        un simulateur de panier. Ils peuvent s’écarter fortement des prix réels selon le jour,
+        le vendeur, la saison et la qualité.
+      </p>
+    </div>
+
+    <h2 class="text-xl font-extrabold mt-8 mb-3 text-texte">Les trois niveaux</h2>
+    <ul class="space-y-4">
+      <li class="rounded-xl border border-bord bg-surface p-4">
+        <p class="font-bold text-primaire text-lg">prixMinimum</p>
+        <p class="text-sm text-secondaire mt-1 leading-relaxed">
+          Bas de fourchette — achat favorable, gros volume, ou période d’abondance. Utile pour un
+          scénario «&nbsp;budget serré&nbsp;».
+        </p>
+      </li>
+      <li class="rounded-xl border border-bord bg-surface p-4">
+        <p class="font-bold text-total text-lg">prixEstime</p>
+        <p class="text-sm text-secondaire mt-1 leading-relaxed">
+          Prix <strong class="text-texte">typique</strong> retenu pour le total principal du panier —
+          celui affiché en grand. C’est l’hypothèse centrale de la démo.
+        </p>
+      </li>
+      <li class="rounded-xl border border-bord bg-surface p-4">
+        <p class="font-bold text-alerte text-lg">prixMaximum</p>
+        <p class="text-sm text-secondaire mt-1 leading-relaxed">
+          Haut de fourchette — pénurie, détail, ou produit de meilleure qualité. Sert de garde-fou
+          «&nbsp;pire cas&nbsp;» sur le total.
+        </p>
+      </li>
+    </ul>
+
+    <h2 class="text-xl font-extrabold mt-8 mb-3 text-texte">Totaux panier</h2>
+    <p class="text-sm text-secondaire leading-relaxed mb-4">
+      Pour chaque produit, quantité × prix (min / estimé / max). Les trois sommes sont affichées
+      séparément&nbsp;: vous voyez d’un coup d’œil la fourchette globale de votre panier, pas un
+      seul chiffre figé.
+    </p>
+
+    <h2 class="text-xl font-extrabold mt-8 mb-3 text-texte">Ce que cette démo n’est pas</h2>
+    <ul class="list-disc pl-5 text-sm text-secondaire space-y-2 leading-relaxed">
+      <li>Un comparateur de prix en temps réel</li>
+      <li>Un outil de commande ou de paiement</li>
+      <li>Une source officielle de statistiques</li>
+      <li>Un engagement sur les tarifs du marché de San-Pédro</li>
+    </ul>
+
+    <h2 class="text-xl font-extrabold mt-8 mb-3 text-texte">Données</h2>
+    <p class="text-sm text-secondaire leading-relaxed">
+      Les produits sont seedés dans <code class="text-xs bg-fond border border-bord px-1.5 py-0.5 rounded">src/data/products.json</code>.
+      Vous pouvez les ajuster librement pour coller à un relevé terrain ou à un atelier pédagogique.
+    </p>
+
+    <div class="mt-10 flex flex-wrap gap-3">
+      <a href="/" class="btn-cta inline-flex h-11 items-center px-5">Retour au catalogue</a>
+      <a href="/panier" class="inline-flex h-11 items-center rounded-xl border border-bord bg-surface px-5 font-semibold text-sm">
+        Voir le panier
+      </a>
+    </div>
+  </article>
+</Layout>

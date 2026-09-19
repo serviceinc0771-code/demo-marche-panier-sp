@@ -1,0 +1,169 @@
+---
+import Layout from '../layouts/Layout.astro';
+import products from '../data/products.json';
+---
+
+<Layout title="Panier — Marché San-Pédro">
+  <div class="mx-auto max-w-3xl px-4 py-6 pb-12">
+    <div class="mb-6 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Votre panier</h1>
+        <p class="mt-1 text-sm text-secondaire">Totaux min / estimé / max · estimations démo</p>
+      </div>
+      <button
+        type="button"
+        id="btn-vider"
+        class="text-sm font-semibold text-alerte underline underline-offset-2 hover:no-underline"
+      >
+        Vider le panier
+      </button>
+    </div>
+
+    <!-- Totaux géants -->
+    <section
+      class="mb-6 rounded-2xl border-2 border-bord bg-surface p-5 sm:p-6"
+      aria-labelledby="totaux-title"
+    >
+      <h2 id="totaux-title" class="text-[0.65rem] uppercase tracking-wide font-bold text-secondaire mb-3">
+        Totaux du panier
+      </h2>
+      <div class="space-y-4">
+        <div>
+          <p class="text-sm font-semibold text-secondaire">Estimé (typique)</p>
+          <p class="total-geant" id="total-est">0&nbsp;FCFA</p>
+        </div>
+        <div class="grid grid-cols-2 gap-4 pt-2 border-t border-bord">
+          <div>
+            <p class="text-xs font-bold uppercase text-secondaire">Minimum</p>
+            <p class="prix-geant text-2xl sm:text-3xl text-primaire" id="total-min">0&nbsp;FCFA</p>
+          </div>
+          <div>
+            <p class="text-xs font-bold uppercase text-secondaire">Maximum</p>
+            <p class="prix-geant text-2xl sm:text-3xl text-alerte" id="total-max">0&nbsp;FCFA</p>
+          </div>
+        </div>
+        <p class="text-xs text-secondaire" id="total-meta">0 article · fourchette indicative</p>
+      </div>
+    </section>
+
+    <!-- Lignes -->
+    <div id="lignes" class="space-y-3"></div>
+
+    <div id="panier-vide" class="hidden rounded-2xl border border-dashed border-bord bg-surface p-10 text-center">
+      <p class="text-4xl mb-3" aria-hidden="true">🧺</p>
+      <p class="font-bold text-lg">Panier vide</p>
+      <p class="mt-1 text-sm text-secondaire">Ajoutez des produits depuis le catalogue.</p>
+      <a href="/" class="btn-cta inline-flex mt-5 h-11 px-6 items-center">Parcourir le catalogue</a>
+    </div>
+
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href="/" class="inline-flex h-11 items-center rounded-xl border border-bord bg-surface px-5 font-semibold text-sm hover:border-primaire hover:text-primaire">
+        ← Continuer les courses
+      </a>
+      <a href="/methodologie" class="inline-flex h-11 items-center text-sm font-semibold text-secondaire underline underline-offset-2">
+        Comment lire ces prix ?
+      </a>
+    </div>
+  </div>
+</Layout>
+
+<script define:vars={{ productsJson: JSON.stringify(products) }}>
+  const PRODUCTS = JSON.parse(productsJson);
+  const byId = Object.fromEntries(PRODUCTS.map((p) => [p.id, p]));
+
+  function render() {
+    const panier = window.MarchePanier.load();
+    const fmt = window.MarchePanier.formatCFA;
+    const t = window.MarchePanier.totals(PRODUCTS);
+    const lignesEl = document.getElementById('lignes');
+    const videEl = document.getElementById('panier-vide');
+
+    document.getElementById('total-est').textContent = fmt(t.est);
+    document.getElementById('total-min').textContent = fmt(t.min);
+    document.getElementById('total-max').textContent = fmt(t.max);
+    document.getElementById('total-meta').textContent =
+      (t.items === 0 ? '0 article' : t.items === 1 ? '1 article' : t.items + ' articles') +
+      ' · ' +
+      t.lines +
+      ' référence' +
+      (t.lines > 1 ? 's' : '') +
+      ' · fourchette indicative';
+
+    const ids = Object.keys(panier);
+    if (ids.length === 0) {
+      lignesEl.innerHTML = '';
+      videEl.classList.remove('hidden');
+      return;
+    }
+    videEl.classList.add('hidden');
+
+    lignesEl.innerHTML = ids
+      .map((id) => {
+        const p = byId[id];
+        if (!p) return '';
+        const q = panier[id];
+        const lineEst = q * p.prixEstime;
+        const lineMin = q * p.prixMinimum;
+        const lineMax = q * p.prixMaximum;
+        return `
+        <article class="rounded-xl border border-bord bg-surface p-4" data-line="${id}">
+          <div class="flex gap-3">
+            <span class="text-2xl" aria-hidden="true">${p.emoji}</span>
+            <div class="min-w-0 flex-1">
+              <div class="flex flex-wrap items-start justify-between gap-2">
+                <div>
+                  <h3 class="font-bold text-texte">${p.nom}</h3>
+                  <p class="text-xs text-secondaire">${p.categorie} · / ${p.unite}</p>
+                </div>
+                <p class="prix-geant text-xl text-total">${fmt(lineEst)}</p>
+              </div>
+              <div class="mt-1 flex flex-wrap gap-x-3 text-xs font-semibold">
+                <span class="text-primaire">Min ${fmt(lineMin)}</span>
+                <span class="text-alerte">Max ${fmt(lineMax)}</span>
+              </div>
+              <div class="mt-3 flex items-center gap-2">
+                <div class="flex items-center rounded-lg border border-bord overflow-hidden">
+                  <button type="button" class="h-9 w-9 font-bold text-lg text-secondaire hover:bg-fond" data-act="minus" data-id="${id}">−</button>
+                  <input type="number" min="0" max="999" value="${q}" class="w-12 h-9 text-center font-bold border-x border-bord" data-qty="${id}" aria-label="Quantité ${p.nom}" />
+                  <button type="button" class="h-9 w-9 font-bold text-lg text-cta hover:bg-fond" data-act="plus" data-id="${id}">+</button>
+                </div>
+                <button type="button" class="text-xs font-semibold text-alerte underline ml-auto" data-act="remove" data-id="${id}">Retirer</button>
+              </div>
+            </div>
+          </div>
+        </article>`;
+      })
+      .join('');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    render();
+
+    document.getElementById('lignes').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-act]');
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const act = btn.dataset.act;
+      if (act === 'plus') window.MarchePanier.add(id, 1);
+      else if (act === 'minus') window.MarchePanier.add(id, -1);
+      else if (act === 'remove') window.MarchePanier.setQty(id, 0);
+      render();
+    });
+
+    document.getElementById('lignes').addEventListener('change', (e) => {
+      const input = e.target.closest('[data-qty]');
+      if (!input) return;
+      window.MarchePanier.setQty(input.dataset.qty, input.value);
+      render();
+    });
+
+    document.getElementById('btn-vider').addEventListener('click', () => {
+      if (confirm('Vider tout le panier ?')) {
+        window.MarchePanier.clear();
+        render();
+      }
+    });
+  });
+
+  window.addEventListener('panier:change', render);
+</script>

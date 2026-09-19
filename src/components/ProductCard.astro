@@ -1,0 +1,95 @@
+---
+interface Product {
+  id: string;
+  nom: string;
+  unite: string;
+  categorie: string;
+  emoji: string;
+  prixMinimum: number;
+  prixEstime: number;
+  prixMaximum: number;
+}
+
+interface Props {
+  product: Product;
+}
+
+const { product: p } = Astro.props;
+
+function fmt(n: number) {
+  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0');
+}
+---
+
+<article
+  class="card-produit flex flex-col"
+  data-id={p.id}
+  data-categorie={p.categorie}
+  data-min={p.prixMinimum}
+  data-est={p.prixEstime}
+  data-max={p.prixMaximum}
+  data-unite={p.unite}
+>
+  <div class="flex items-start gap-3 p-4 pb-2">
+    <span class="text-3xl leading-none" aria-hidden="true">{p.emoji}</span>
+    <div class="min-w-0 flex-1">
+      <h2 class="font-bold text-lg leading-tight text-texte">{p.nom}</h2>
+      <p class="text-xs text-secondaire mt-0.5">
+        <span class="inline-block rounded bg-fond px-1.5 py-0.5 font-medium">{p.categorie}</span>
+        · par {p.unite}
+      </p>
+    </div>
+  </div>
+
+  <!-- Chiffres d'abord -->
+  <div class="px-4 py-2">
+    <p class="text-[0.65rem] uppercase tracking-wide font-bold text-secondaire mb-1">Prix estimé</p>
+    <p class="prix-geant prix-estime">{fmt(p.prixEstime)}&nbsp;<span class="text-base font-bold">FCFA</span></p>
+    <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+      <span>
+        <span class="text-secondaire text-xs font-semibold">Min</span>
+        <span class="prix-min text-primaire ml-1">{fmt(p.prixMinimum)}</span>
+      </span>
+      <span>
+        <span class="text-secondaire text-xs font-semibold">Max</span>
+        <span class="prix-max text-alerte ml-1">{fmt(p.prixMaximum)}</span>
+      </span>
+    </div>
+    <p class="mt-1 text-[0.65rem] text-secondaire">estimations démo · FCFA / {p.unite}</p>
+  </div>
+
+  <div class="mt-auto flex items-center gap-2 border-t border-bord p-3 bg-fond/50">
+    <div class="flex items-center rounded-lg border border-bord bg-surface overflow-hidden">
+      <button
+        type="button"
+        class="qty-minus h-10 w-10 font-bold text-lg text-secondaire hover:bg-bord/50"
+        aria-label={`Retirer ${p.nom}`}
+        data-action="minus"
+        >−</button
+      >
+      <input
+        type="number"
+        min="0"
+        max="999"
+        value="0"
+        class="qty-input w-12 h-10 text-center font-bold border-x border-bord bg-surface text-texte"
+        aria-label={`Quantité ${p.nom}`}
+        data-qty
+      />
+      <button
+        type="button"
+        class="qty-plus h-10 w-10 font-bold text-lg text-cta hover:bg-bord/50"
+        aria-label={`Ajouter ${p.nom}`}
+        data-action="plus"
+        >+</button
+      >
+    </div>
+    <button
+      type="button"
+      class="btn-cta flex-1 h-10 px-3 text-sm"
+      data-action="add"
+    >
+      Ajouter
+    </button>
+  </div>
+</article>
